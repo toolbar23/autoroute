@@ -7,6 +7,7 @@ import (
 
 type StaticRoute struct {
 	UrlPath    string
+	UrlBase    string
 	ImportPath string
 	Package    string
 	Funcname   string
@@ -19,7 +20,6 @@ func writeRouter(w io.Writer, framework, packname string, imports []string, func
 	w.Write([]byte(`package ` + packname + `
 
 import "regexp"
-import "github.com/toolbar23/autoroute/"
 `))
 	for idx, r := range routes {
 		w.Write([]byte("import mod" + strconv.Itoa(idx) + " \"" + module + r.ImportPath + "\"\n"))
@@ -31,10 +31,11 @@ import "github.com/toolbar23/autoroute/"
 	w.Write([]byte(`
 
 type Route struct {
-	*htmx.Route
 	UrlPath      string
 	Package     string
 	Funcref ` + functype + `
+    Funcname string
+	Partial string
 	Method   string
 }
 `))
@@ -87,9 +88,12 @@ func Get() []Route {
 		w.Write([]byte(`
 	Routes = append(Routes, Route{
 		UrlPath:     "` + r.UrlPath + `",
+		UrlBase:     "` + r.UrlBase + `",
 		Package:    "` + r.Package + `",
 		Funcref: mod` + strconv.Itoa(idx) + "." + r.Funcname + `,
 		Method:  "` + r.Method + `",
+		Funcname: "` + r.Funcname + `",
+		Partial: "` + r.Partial + `",
 	})
 `))
 

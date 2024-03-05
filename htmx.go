@@ -4,6 +4,8 @@ import (
 	"context"
 	"github.com/a-h/templ"
 	"github.com/gin-gonic/gin"
+	"reflect"
+	"runtime"
 )
 
 type Route struct {
@@ -24,7 +26,9 @@ type Response struct {
 }
 type Context struct {
 	*gin.Context
-	Route Route
+	Url      string
+	Partial  string
+	Funcname string
 }
 
 const (
@@ -41,10 +45,20 @@ const (
 	HeaderRefresh            = "HX-Refresh"
 )
 
-func NewWrap(ginctx *gin.Context, r Route) *Context {
-	c := &Context{ginctx, r}
+func NewWrap(ginctx *gin.Context, url, partial, funcname string) *Context {
+	c := &Context{ginctx, url, partial, funcname}
 	return c
+}
 
+func getFunctionName(i interface{}) string {
+	return runtime.FuncForPC(reflect.ValueOf(i).Pointer()).Name()
+}
+
+func (c *Context) Href() string {
+	return c.Url
+}
+func (c *Context) HrefPartial(partial string) string {
+	return c.Url + "___" + partial
 }
 
 func (c *Context) Templ(status int, component templ.Component) {

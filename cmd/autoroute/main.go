@@ -165,6 +165,7 @@ func processFileForRoute(mod_abs_path, routes_abs_path string, file_abs_path str
 				res.Method = strings.ToUpper(found[0][1])
 				res.Funcname = t.Name.Name
 				res.UrlPath = url_path
+				res.UrlBase = url_path
 				if found[0][2] == "Partial" {
 					res.Partial = found[0][3]
 					res.UrlPath += "___" + res.Partial
