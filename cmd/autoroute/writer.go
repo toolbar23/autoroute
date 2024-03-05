@@ -32,6 +32,7 @@ import "regexp"
 
 type Route struct {
 	UrlPath      string
+	UrlBase    string
 	Package     string
 	Funcref ` + functype + `
     Funcname string
