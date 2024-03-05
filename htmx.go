@@ -6,6 +6,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type Route struct {
+	UrlPath string
+	Package string
+	Method  string
+}
+
 // Response contain data that the server can communicate back to HTMX
 type Response struct {
 	Push               string
@@ -18,6 +24,7 @@ type Response struct {
 }
 type Context struct {
 	*gin.Context
+	Route Route
 }
 
 const (
@@ -34,8 +41,10 @@ const (
 	HeaderRefresh            = "HX-Refresh"
 )
 
-func NewWrap(ginctx *gin.Context) *Context {
-	return &Context{ginctx}
+func NewWrap(ginctx *gin.Context, r Route) *Context {
+	c := &Context{ginctx, r}
+	return c
+
 }
 
 func (c *Context) Templ(status int, component templ.Component) {

@@ -54,15 +54,16 @@ func main() {
 			packname := "test"
 			filename := "routes.go"
 			customimports := []string{}
-			framework := "ahtmx"
+			framework := "autoroute"
 
+			fmt.Println("HIHIHIHIHI")
 			frameworkimports := []string{}
 			if framework == "gin" {
 				functype = "func(c *gin.Context)"
 				frameworkimports = []string{"github.com/gin-gonic/gin"}
-			} else if framework == "ahtmx" {
-				functype = "func(c *ahtmx.Context)"
-				frameworkimports = []string{"github.com/gin-gonic/gin", "github.com/toolbar23/awardio/backend-go/ahtmx"}
+			} else if framework == "autoroute" {
+				functype = "func(c *autoroute.Context)"
+				frameworkimports = []string{"github.com/gin-gonic/gin", "github.com/toolbar23/autoroute"}
 			} else if framework == "http" {
 				functype = "func(w http.ResponseWriter, r *http.Request, s *server.Server)"
 				frameworkimports = []string{"net/http"}
@@ -89,6 +90,7 @@ func main() {
 
 	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)
+		os.Exit(1)
 	}
 
 }
@@ -146,9 +148,9 @@ func processFileForRoute(mod_abs_path, routes_abs_path string, file_abs_path str
 	import_path := filepath.Dir(postfix)
 
 	Routes := []StaticRoute{}
+	//	rx := regexp.MustCompile("/(Get|Post|Put|Patch|Delete)(Partial|)(.*)")
 
-	fmt.Println(pkg)
-	reg, _ := regexp.Compile("(Get|Put|Post|Delete)(.*)")
+	reg, _ := regexp.Compile("(Get|Put|Post|Delete|Patch)(Partial|)(.*)")
 	for _, decl := range f.Decls {
 		switch t := decl.(type) {
 		// That's a func decl !
@@ -158,11 +160,15 @@ func processFileForRoute(mod_abs_path, routes_abs_path string, file_abs_path str
 			fmt.Println(found)
 			if len(found) > 0 {
 				res := StaticRoute{}
-				res.Pack = pkg.Name()
+				res.Package = pkg.Name()
 				res.ImportPath = import_path
 				res.Method = strings.ToUpper(found[0][1])
 				res.Funcname = t.Name.Name
 				res.UrlPath = url_path
+				if found[0][2] == "Partial" {
+					res.Partial = found[0][3]
+					res.UrlPath += "___" + res.Partial
+				}
 				Routes = append(Routes, res)
 			}
 		}
