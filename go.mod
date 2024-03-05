@@ -1,4 +1,4 @@
-module github.com/toolbar23/autroute
+module github.com/toolbar23/autoroute
 
 go 1.22.0
 
