@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"reflect"
 	"runtime"
+	"strconv"
 )
 
 type Route struct {
@@ -52,6 +53,22 @@ func NewWrap(ginctx *gin.Context, url, partial, funcname string) *Context {
 
 func getFunctionName(i interface{}) string {
 	return runtime.FuncForPC(reflect.ValueOf(i).Pointer()).Name()
+}
+func (c *Context) ParamInt64(key string) (int64, error) {
+	str := c.Context.Param(key)
+	i, err := strconv.Atoi(str)
+	if err != nil {
+		return 0, err
+	}
+	return int64(i), nil
+}
+func (c *Context) ParamInt32(key string) (int32, error) {
+	str := c.Context.Param(key)
+	i, err := strconv.Atoi(str)
+	if err != nil {
+		return 0, err
+	}
+	return int32(i), nil
 }
 
 func (c *Context) Href() string {

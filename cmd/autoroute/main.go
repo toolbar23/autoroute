@@ -62,8 +62,8 @@ func main() {
 				functype = "func(c *gin.Context)"
 				frameworkimports = []string{"github.com/gin-gonic/gin"}
 			} else if framework == "autoroute" {
-				functype = "func(c *autoroute.Context)"
-				frameworkimports = []string{"github.com/gin-gonic/gin", "github.com/toolbar23/autoroute"}
+				functype = "func(s *env.Env, c *autoroute.Context)"
+				frameworkimports = []string{"github.com/gin-gonic/gin", "github.com/toolbar23/autoroute", "github.com/toolbar23/awardio/backend-go/env"}
 			} else if framework == "http" {
 				functype = "func(w http.ResponseWriter, r *http.Request, s *server.Server)"
 				frameworkimports = []string{"net/http"}
